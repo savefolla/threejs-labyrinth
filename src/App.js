@@ -6,9 +6,13 @@ class App extends Component {
     super(props);
 
     this.myRef = React.createRef();
+
+    this.fieldWidth = 100;
+
     this.scene = undefined;
     this.camera = undefined;
     this.renderer = undefined;
+    this.cones = [];
     this.light = undefined;
     this.cube = undefined;
     this.plane = undefined;
@@ -20,6 +24,7 @@ class App extends Component {
     this.initScene = this.initScene.bind(this);
     this.initCamera = this.initCamera.bind(this);
     this.initRenderer = this.initRenderer.bind(this);
+    this.initCones = this.initCones.bind(this);
     this.initLight = this.initLight.bind(this);
     this.initPlane = this.initPlane.bind(this);
     this.initCube = this.initCube.bind(this);
@@ -35,9 +40,10 @@ class App extends Component {
     this.initScene();
     this.initCamera();
     this.initRenderer();
+    this.initCones();
+    this.initCube();
     this.initLight();
     this.initPlane();
-    this.initCube();
   }
 
   initListeners() {
@@ -53,34 +59,47 @@ class App extends Component {
 
   initCamera() {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.x = 2.2;
-    this.camera.position.y = 4.2;
-    this.camera.position.z = 5.4;
-    this.camera.rotation.x = -0.6;
-    this.camera.rotation.y = 0.3;
-    this.camera.rotation.z = 0.2;
+    this.camera.position.y = 2;
+    this.camera.position.z = 5;
   };
 
   initRenderer() {
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.myRef.current.appendChild(this.renderer.domElement);
   };
 
-  initLight() {
-    this.light = new THREE.DirectionalLight(0xffffff, 1, 100);
-    this.light.position.set(5, 10, -5);
-    this.light.castShadow = true;            // default false
-    this.scene.add(this.light);
-    var helper = new THREE.DirectionalLightHelper(this.light, 5);
+  initCones() {
+    const coneGeometry = new THREE.ConeGeometry(1, 1, 32);
+    const coneMaterial = new THREE.MeshToonMaterial({
+      color: 0x2c6810,
+      shininess: 200
+    });
+    for (let i = 0; i < this.fieldWidth; ++i) {
+      const cone = new THREE.Mesh(coneGeometry, coneMaterial);
+      cone.position.x = Math.random() * this.fieldWidth;
+      cone.position.z = Math.random() * this.fieldWidth;
+      cone.castShadow = true;
+      this.cones.push(cone);
+      this.scene.add(cone);
+    }
+  }
 
+  initLight() {
+    this.light = new THREE.DirectionalLight(0xffffff, 100);
+    this.light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z - 1);
+    this.light.target = this.cube;
+    this.light.castShadow = true;
+    this.scene.add(this.light);
+
+    const helper = new THREE.DirectionalLightHelper(this.light, 5);
     this.scene.add(helper);
   };
 
   initPlane() {
-    const planeGeometry = new THREE.PlaneGeometry(100, 100, 1, 1);
+    const planeGeometry = new THREE.PlaneGeometry(this.fieldWidth, this.fieldWidth, 1, 1);
     const planeMesh = new THREE.MeshLambertMaterial({color: 0x011d49});
     this.plane = new THREE.Mesh(planeGeometry, planeMesh);
     this.plane.rotation.x = -Math.PI / 2;
@@ -92,10 +111,10 @@ class App extends Component {
     const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
     const cubeMaterial = new THREE.MeshToonMaterial({
       color: 0xff7272,
-      shininess: 200,
+      shininess: 200
     });
     this.cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    this.cube.position.y = 2;
+    this.cube.position.y = 1;
     this.cube.castShadow = true;
     this.scene.add(this.cube);
   }
@@ -106,10 +125,10 @@ class App extends Component {
         this.forward();
         break;
       case 'a':
-        this.rotateLeft();
+        this.rotate('left');
         break;
       case 'd':
-        this.rotateRight();
+        this.rotate('right');
         break;
       default:
         break;
@@ -117,15 +136,17 @@ class App extends Component {
   }
 
   forward() {
-    console.log('forward');
+    this.plane.position.z += 1;
+    this.cones.forEach(cone => cone.position.z += 1);
   }
 
-  rotateLeft() {
-    console.log('left');
-  }
-
-  rotateRight() {
-    console.log('right');
+  rotate(direction) {
+    if (direction === 'left') {
+      this.plane.rotation.z += 1;
+    }
+    if (direction === 'right') {
+      this.plane.rotation.z -= 1;
+    }
   }
 
   animate() {
