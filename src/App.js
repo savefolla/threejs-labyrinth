@@ -153,7 +153,8 @@ class App extends Component {
   }
 
   forward() {
-    this.group.position.z += 1;
+    this.group.position.x -= Math.sin(this.pivot.rotation.y) * 0.01;
+    this.group.position.z += Math.cos(this.pivot.rotation.y) * 0.01;
   }
 
   rotate(direction) {
