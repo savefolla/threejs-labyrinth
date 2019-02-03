@@ -12,15 +12,18 @@ class App extends Component {
     this.cube = undefined;
 
     this.animate = this.animate.bind(this);
-    this.setup = this.setup.bind(this);
+    this.init = this.init.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
+    this.initListeners = this.initListeners.bind(this);
   }
 
   componentDidMount() {
-    this.setup();
+    this.init();
+    this.initListeners();
     this.animate();
   }
 
-  setup() {
+  init() {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
@@ -36,11 +39,40 @@ class App extends Component {
     this.camera.position.z = 5;
   }
 
+  initListeners() {
+    document.addEventListener('keypress', this.onKeyUp);
+  }
+
+  onKeyUp(e) {
+    switch (e.key) {
+      case 'w':
+        this.forward();
+        break;
+      case 'a':
+        this.rotateLeft();
+        break;
+      case 'd':
+        this.rotateRight();
+        break;
+      default:
+        break;
+    }
+  }
+
+  forward() {
+    console.log('forward');
+  }
+
+  rotateLeft() {
+    console.log('left');
+  }
+
+  rotateRight() {
+    console.log('right');
+  }
+
   animate() {
     requestAnimationFrame(this.animate);
-
-    this.cube.rotation.x += 0.01;
-    this.cube.rotation.y += 0.01;
 
     this.renderer.render(this.scene, this.camera);
   }
