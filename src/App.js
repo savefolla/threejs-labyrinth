@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import * as THREE from 'three';
+import {random} from './helpers';
 
 class App extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class App extends Component {
     this.cube = undefined;
     this.plane = undefined;
     this.group = undefined;
+    this.pivot = undefined;
 
     this.animate = this.animate.bind(this);
     this.init = this.init.bind(this);
@@ -30,6 +32,7 @@ class App extends Component {
     this.initPlane = this.initPlane.bind(this);
     this.initCube = this.initCube.bind(this);
     this.initGroup = this.initGroup.bind(this);
+    this.initPivot = this.initPivot.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +50,7 @@ class App extends Component {
     this.initLight();
     this.initPlane();
     this.initGroup();
+    this.initPivot();
   }
 
   initListeners() {
@@ -63,7 +67,7 @@ class App extends Component {
   initCamera() {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.y = 2;
-    this.camera.position.z = 5;
+    this.camera.position.z = 3;
   };
 
   initRenderer() {
@@ -75,15 +79,15 @@ class App extends Component {
   };
 
   initCones() {
-    const coneGeometry = new THREE.ConeGeometry(1, 1, 32);
+    const coneGeometry = new THREE.ConeGeometry(1, 10, 32);
     const coneMaterial = new THREE.MeshToonMaterial({
       color: 0x2c6810,
-      shininess: 200
+      shininess: 0
     });
-    for (let i = 0; i < this.fieldWidth; ++i) {
+    for (let i = 0; i < this.fieldWidth * 5; ++i) {
       const cone = new THREE.Mesh(coneGeometry, coneMaterial);
-      cone.position.x = Math.random() * this.fieldWidth;
-      cone.position.z = Math.random() * this.fieldWidth;
+      cone.position.x = random(-this.fieldWidth / 2, this.fieldWidth / 2);
+      cone.position.z = random(-this.fieldWidth / 2, this.fieldWidth / 2);
       cone.castShadow = true;
       this.cones.push(cone);
       this.scene.add(cone);
@@ -92,13 +96,10 @@ class App extends Component {
 
   initLight() {
     this.light = new THREE.DirectionalLight(0xffffff, 1);
-    this.light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z - 3);
+    this.light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z - 2);
     this.light.target = this.cube;
     this.light.castShadow = true;
     this.scene.add(this.light);
-
-    const helper = new THREE.DirectionalLightHelper(this.light, 5);
-    this.scene.add(helper);
   };
 
   initPlane() {
@@ -111,7 +112,7 @@ class App extends Component {
   }
 
   initCube() {
-    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const cubeGeometry = new THREE.BoxGeometry(.5, .5, 1);
     const cubeMaterial = new THREE.MeshToonMaterial({
       color: 0xff7272,
       shininess: 200
@@ -123,10 +124,16 @@ class App extends Component {
   }
 
   initGroup() {
-    this.group = new THREE.Group();
+    this.group = new THREE.Object3D();
     this.group.add(this.plane);
     this.cones.forEach(cone => this.group.add(cone));
     this.scene.add(this.group);
+  }
+
+  initPivot() {
+    this.pivot = new THREE.Object3D();
+    this.pivot.add(this.group);
+    this.scene.add(this.pivot);
   }
 
   onKeyUp(e) {
@@ -150,11 +157,11 @@ class App extends Component {
   }
 
   rotate(direction) {
-    if (direction === 'left') {
-      this.group.rotation.y += .1;
-    }
     if (direction === 'right') {
-      this.group.rotation.y -= .1;
+      this.pivot.rotation.y += .01;
+    }
+    if (direction === 'left') {
+      this.pivot.rotation.y -= .01;
     }
   }
 
