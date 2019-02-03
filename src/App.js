@@ -17,11 +17,12 @@ class App extends Component {
     this.init = this.init.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.initListeners = this.initListeners.bind(this);
-    this.initPlane = this.initPlane.bind(this);
     this.initScene = this.initScene.bind(this);
     this.initCamera = this.initCamera.bind(this);
     this.initRenderer = this.initRenderer.bind(this);
     this.initLight = this.initLight.bind(this);
+    this.initPlane = this.initPlane.bind(this);
+    this.initCube = this.initCube.bind(this);
   }
 
   componentDidMount() {
@@ -36,10 +37,7 @@ class App extends Component {
     this.initRenderer();
     this.initLight();
     this.initPlane();
-    var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-    this.cube = new THREE.Mesh(geometry, material);
-    this.scene.add(this.cube);
+    this.initCube();
   }
 
   initListeners() {
@@ -76,15 +74,30 @@ class App extends Component {
     this.light.position.set(5, 10, -5);
     this.light.castShadow = true;            // default false
     this.scene.add(this.light);
+    var helper = new THREE.DirectionalLightHelper(this.light, 5);
+
+    this.scene.add(helper);
   };
 
   initPlane() {
-    var planeGeometry = new THREE.PlaneGeometry(100, 100, 1, 1);
-    var planeMesh = new THREE.MeshLambertMaterial({color: 0x011d49});
+    const planeGeometry = new THREE.PlaneGeometry(100, 100, 1, 1);
+    const planeMesh = new THREE.MeshLambertMaterial({color: 0x011d49});
     this.plane = new THREE.Mesh(planeGeometry, planeMesh);
     this.plane.rotation.x = -Math.PI / 2;
     this.plane.receiveShadow = true;
     this.scene.add(this.plane);
+  }
+
+  initCube() {
+    const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+    const cubeMaterial = new THREE.MeshToonMaterial({
+      color: 0xff7272,
+      shininess: 200,
+    });
+    this.cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    this.cube.position.y = 2;
+    this.cube.castShadow = true;
+    this.scene.add(this.cube);
   }
 
   onKeyUp(e) {
