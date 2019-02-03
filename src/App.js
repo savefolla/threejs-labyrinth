@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import * as THREE from 'three';
 import {random} from './helpers';
+import anime from "animejs";
 
 class App extends Component {
   constructor(props) {
@@ -20,8 +21,12 @@ class App extends Component {
     this.group = undefined;
     this.pivot = undefined;
 
+    this.bounceAnimation = undefined;
+
     this.animate = this.animate.bind(this);
     this.init = this.init.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.initListeners = this.initListeners.bind(this);
     this.initScene = this.initScene.bind(this);
@@ -33,6 +38,7 @@ class App extends Component {
     this.initCube = this.initCube.bind(this);
     this.initGroup = this.initGroup.bind(this);
     this.initPivot = this.initPivot.bind(this);
+    this.initBounceAnimation = this.initBounceAnimation.bind(this);
   }
 
   componentDidMount() {
@@ -51,10 +57,13 @@ class App extends Component {
     this.initPlane();
     this.initGroup();
     this.initPivot();
+    this.initBounceAnimation();
   }
 
   initListeners() {
-    document.addEventListener('keypress', this.onKeyUp);
+    document.addEventListener('keypress', this.onKeyPress);
+    document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keyup', this.onKeyUp);
   }
 
   initScene() {
@@ -136,7 +145,19 @@ class App extends Component {
     this.scene.add(this.pivot);
   }
 
-  onKeyUp(e) {
+  initBounceAnimation() {
+    this.bounceAnimation = anime({
+      targets: this.cube.position,
+      y: 1.2,
+      duration: 1200,
+      direction: 'alternate',
+      easing: 'linear',
+      loop: true
+    });
+    this.bounceAnimation.pause();
+  }
+
+  onKeyPress(e) {
     switch (e.key) {
       case 'w':
         this.forward();
@@ -146,6 +167,26 @@ class App extends Component {
         break;
       case 'd':
         this.rotate('right');
+        break;
+      default:
+        break;
+    }
+  }
+
+  onKeyUp(e) {
+    switch (e.key) {
+      case 'w':
+        this.bounceAnimation.pause();
+        break;
+      default:
+        break;
+    }
+  }
+
+  onKeyDown(e) {
+    switch (e.key) {
+      case 'w':
+        this.bounceAnimation.play();
         break;
       default:
         break;
