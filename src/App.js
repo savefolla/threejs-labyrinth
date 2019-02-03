@@ -16,6 +16,7 @@ class App extends Component {
     this.light = undefined;
     this.cube = undefined;
     this.plane = undefined;
+    this.group = undefined;
 
     this.animate = this.animate.bind(this);
     this.init = this.init.bind(this);
@@ -28,6 +29,7 @@ class App extends Component {
     this.initLight = this.initLight.bind(this);
     this.initPlane = this.initPlane.bind(this);
     this.initCube = this.initCube.bind(this);
+    this.initGroup = this.initGroup.bind(this);
   }
 
   componentDidMount() {
@@ -44,6 +46,7 @@ class App extends Component {
     this.initCube();
     this.initLight();
     this.initPlane();
+    this.initGroup();
   }
 
   initListeners() {
@@ -88,8 +91,8 @@ class App extends Component {
   }
 
   initLight() {
-    this.light = new THREE.DirectionalLight(0xffffff, 100);
-    this.light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z - 1);
+    this.light = new THREE.DirectionalLight(0xffffff, 1);
+    this.light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z - 3);
     this.light.target = this.cube;
     this.light.castShadow = true;
     this.scene.add(this.light);
@@ -119,6 +122,13 @@ class App extends Component {
     this.scene.add(this.cube);
   }
 
+  initGroup() {
+    this.group = new THREE.Group();
+    this.group.add(this.plane);
+    this.cones.forEach(cone => this.group.add(cone));
+    this.scene.add(this.group);
+  }
+
   onKeyUp(e) {
     switch (e.key) {
       case 'w':
@@ -136,16 +146,15 @@ class App extends Component {
   }
 
   forward() {
-    this.plane.position.z += 1;
-    this.cones.forEach(cone => cone.position.z += 1);
+    this.group.position.z += 1;
   }
 
   rotate(direction) {
     if (direction === 'left') {
-      this.plane.rotation.z += 1;
+      this.group.rotation.y += .1;
     }
     if (direction === 'right') {
-      this.plane.rotation.z -= 1;
+      this.group.rotation.y -= .1;
     }
   }
 
