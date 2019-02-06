@@ -15,6 +15,7 @@ class App extends Component {
     this.camera = undefined;
     this.renderer = undefined;
     this.cones = [];
+    this.cylinders = [];
     this.light = undefined;
     this.cube = undefined;
     this.plane = undefined;
@@ -32,7 +33,7 @@ class App extends Component {
     this.initScene = this.initScene.bind(this);
     this.initCamera = this.initCamera.bind(this);
     this.initRenderer = this.initRenderer.bind(this);
-    this.initCones = this.initCones.bind(this);
+    this.initTrees = this.initTrees.bind(this);
     this.initLight = this.initLight.bind(this);
     this.initPlane = this.initPlane.bind(this);
     this.initCube = this.initCube.bind(this);
@@ -51,7 +52,7 @@ class App extends Component {
     this.initScene();
     this.initCamera();
     this.initRenderer();
-    this.initCones();
+    this.initTrees();
     this.initCube();
     this.initLight();
     this.initPlane();
@@ -87,24 +88,39 @@ class App extends Component {
     this.myRef.current.appendChild(this.renderer.domElement);
   };
 
-  initCones() {
+  initTrees() {
+    const cylinderGeometry = new THREE.CylinderGeometry(.3, .3, 2, 10);
+    const cylinderMaterial = new THREE.MeshToonMaterial({
+      color: 0x4c2203,
+      shininess: 0
+    });
     const coneGeometry = new THREE.ConeGeometry(1, 10, 32);
     const coneMaterial = new THREE.MeshToonMaterial({
       color: 0x2c6810,
       shininess: 0
     });
     for (let i = 0; i < this.fieldWidth * 5; ++i) {
+      const position = {
+        x: random(-this.fieldWidth / 2, this.fieldWidth / 2),
+        z: random(-this.fieldWidth / 2, this.fieldWidth / 2)
+      };
       const cone = new THREE.Mesh(coneGeometry, coneMaterial);
-      cone.position.x = random(-this.fieldWidth / 2, this.fieldWidth / 2);
-      cone.position.z = random(-this.fieldWidth / 2, this.fieldWidth / 2);
+      const cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+      cone.position.x = position.x;
+      cone.position.z = position.z;
+      cone.position.y = 6;
+      cylinder.position.x = position.x;
+      cylinder.position.z = position.z;
       cone.castShadow = true;
       this.cones.push(cone);
+      this.cylinders.push(cylinder);
       this.scene.add(cone);
+      this.scene.add(cylinder);
     }
   }
 
   initLight() {
-    this.light = new THREE.DirectionalLight(0xffffff, 1);
+    this.light = new THREE.SpotLight(0xffffff, 1, 20, 8, 1);
     this.light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z - 2);
     this.light.target = this.cube;
     this.light.castShadow = true;
@@ -113,7 +129,10 @@ class App extends Component {
 
   initPlane() {
     const planeGeometry = new THREE.PlaneGeometry(this.fieldWidth, this.fieldWidth, 1, 1);
-    const planeMesh = new THREE.MeshLambertMaterial({color: 0x011d49});
+    const planeMesh = new THREE.MeshToonMaterial({
+      color: 0x000c02,
+      shininess: 200
+    });
     this.plane = new THREE.Mesh(planeGeometry, planeMesh);
     this.plane.rotation.x = -Math.PI / 2;
     this.plane.receiveShadow = true;
@@ -123,7 +142,7 @@ class App extends Component {
   initCube() {
     const cubeGeometry = new THREE.BoxGeometry(.5, .5, 1);
     const cubeMaterial = new THREE.MeshToonMaterial({
-      color: 0xff7272,
+      color: 0x913f3f,
       shininess: 200
     });
     this.cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
@@ -136,6 +155,7 @@ class App extends Component {
     this.group = new THREE.Object3D();
     this.group.add(this.plane);
     this.cones.forEach(cone => this.group.add(cone));
+    this.cylinders.forEach(cylinder => this.group.add(cylinder));
     this.scene.add(this.group);
   }
 
