@@ -1,1 +1,0 @@
-{"version":3,"sources":["/Users/savefolla/threejs-labyrinth/src/index.css","main.bdf7412a.chunk.css"],"names":[],"mappings":"AAAA,KAAO,QAAU,CAAE,AACnB,OAAS,WAAY,AAAC,WAAY,CCAE","file":"main.bdf7412a.chunk.css","sourcesContent":["body { margin: 0; }\ncanvas { width: 100%; height: 100% }","body { margin: 0; }\ncanvas { width: 100%; height: 100% }\n"]}

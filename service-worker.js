@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/threejs-labyrinth/precache-manifest.6d78fb355b7df4eee74270608bbfd58e.js"
+  "/threejs-labyrinth/precache-manifest.ad2331d67693f4f6b7036cdc3b50bc57.js"
 );
 
 workbox.clientsClaim();

@@ -1,13 +1,13 @@
 {
-  "main.css": "/threejs-labyrinth/static/css/main.bdf7412a.chunk.css",
-  "main.js": "/threejs-labyrinth/static/js/main.6d49eb48.chunk.js",
-  "main.js.map": "/threejs-labyrinth/static/js/main.6d49eb48.chunk.js.map",
-  "static/js/1.c796514e.chunk.js": "/threejs-labyrinth/static/js/1.c796514e.chunk.js",
-  "static/js/1.c796514e.chunk.js.map": "/threejs-labyrinth/static/js/1.c796514e.chunk.js.map",
+  "main.css": "/threejs-labyrinth/static/css/main.6f19055f.chunk.css",
+  "main.js": "/threejs-labyrinth/static/js/main.917368a4.chunk.js",
+  "main.js.map": "/threejs-labyrinth/static/js/main.917368a4.chunk.js.map",
+  "static/js/1.ea4127d4.chunk.js": "/threejs-labyrinth/static/js/1.ea4127d4.chunk.js",
+  "static/js/1.ea4127d4.chunk.js.map": "/threejs-labyrinth/static/js/1.ea4127d4.chunk.js.map",
   "runtime~main.js": "/threejs-labyrinth/static/js/runtime~main.adf200c6.js",
   "runtime~main.js.map": "/threejs-labyrinth/static/js/runtime~main.adf200c6.js.map",
-  "static/css/main.bdf7412a.chunk.css.map": "/threejs-labyrinth/static/css/main.bdf7412a.chunk.css.map",
+  "static/css/main.6f19055f.chunk.css.map": "/threejs-labyrinth/static/css/main.6f19055f.chunk.css.map",
   "index.html": "/threejs-labyrinth/index.html",
-  "precache-manifest.6d78fb355b7df4eee74270608bbfd58e.js": "/threejs-labyrinth/precache-manifest.6d78fb355b7df4eee74270608bbfd58e.js",
+  "precache-manifest.ad2331d67693f4f6b7036cdc3b50bc57.js": "/threejs-labyrinth/precache-manifest.ad2331d67693f4f6b7036cdc3b50bc57.js",
   "service-worker.js": "/threejs-labyrinth/service-worker.js"
 }
