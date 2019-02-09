@@ -17,7 +17,6 @@ class App extends Component {
     this.cones = [];
     this.cylinders = [];
     this.light = undefined;
-    this.cube = undefined;
     this.plane = undefined;
     this.group = undefined;
     this.pivot = undefined;
@@ -36,7 +35,6 @@ class App extends Component {
     this.initTrees = this.initTrees.bind(this);
     this.initLight = this.initLight.bind(this);
     this.initPlane = this.initPlane.bind(this);
-    this.initCube = this.initCube.bind(this);
     this.initGroup = this.initGroup.bind(this);
     this.initPivot = this.initPivot.bind(this);
     this.initBounceAnimation = this.initBounceAnimation.bind(this);
@@ -53,7 +51,6 @@ class App extends Component {
     this.initCamera();
     this.initRenderer();
     this.initTrees();
-    this.initCube();
     this.initLight();
     this.initPlane();
     this.initGroup();
@@ -122,7 +119,6 @@ class App extends Component {
   initLight() {
     this.light = new THREE.SpotLight(0xffffff, 1, 20, 8, 1);
     this.light.position.set(this.camera.position.x, this.camera.position.y, this.camera.position.z - 2);
-    this.light.target = this.cube;
     this.light.castShadow = true;
     this.scene.add(this.light);
   };
@@ -137,18 +133,6 @@ class App extends Component {
     this.plane.rotation.x = -Math.PI / 2;
     this.plane.receiveShadow = true;
     this.scene.add(this.plane);
-  }
-
-  initCube() {
-    const cubeGeometry = new THREE.BoxGeometry(.5, .5, 1);
-    const cubeMaterial = new THREE.MeshToonMaterial({
-      color: 0x913f3f,
-      shininess: 200
-    });
-    this.cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    this.cube.position.y = 1;
-    this.cube.castShadow = true;
-    this.scene.add(this.cube);
   }
 
   initGroup() {
@@ -167,8 +151,8 @@ class App extends Component {
 
   initBounceAnimation() {
     this.bounceAnimation = anime({
-      targets: this.cube.position,
-      y: 1.2,
+      targets: this.camera.position,
+      y: 2.2,
       duration: 1200,
       direction: 'alternate',
       easing: 'linear',
